@@ -1,0 +1,17 @@
+close all;clear all;clc;
+%f=imread('test3_corrupt.pgm');
+f=imread('test4 copy.bmp');
+[f,revertclass]=tofloat(f);
+PQ=paddedsize(size(f));
+[U,V]=dftuv(PQ(1),PQ(2));
+D=hypot(U,V);
+F=fft2(f,PQ(1),PQ(2));
+H=hpfilter('ideal',PQ(1),PQ(2),50);
+k=5;G=(1+k*H).*F;
+g=ifft2(G);
+g=g(1:size(f,1),1:size(f,2));
+g=revertclass(g);
+subplot(2,2,1);imshow(f);title('原图像');
+subplot(2,2,2);imshow(fftshift(H)),[];title('Unmask高通滤波器');
+subplot(2,2,3);imshow(log(1+abs(fftshift(F))),[]);title('原图像的频谱');
+subplot(2,2,4);imshow(g,[]);title('处理后图像');
